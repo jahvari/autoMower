@@ -316,7 +316,7 @@ static String logPrefix(String msg, String color= sNULL){
 }
 
 Map getLogHistory(){
-    return [ warnings: getMemStoreItem("warnHistory") ?: [], errors: getMemStoreItem("errorHistory") ?: [], speech: getMemStoreItem("speechHistory") ?: [] ]
+    return [ warnings: getMemStoreItem("warnHistory") ?: [], errors: getMemStoreItem("errorHistory") ?: [] ]
 }
 
 void clearLogHistory(){
