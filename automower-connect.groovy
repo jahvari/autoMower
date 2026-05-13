@@ -1734,7 +1734,7 @@ Boolean updateMowerChildren(){
         List<Map> flist=[]
         Map srcMap=getMowerMap(mower)
         if(srcMap){
-            String dbg=settings.debugLevel == null ? "2" : settings.debugLevel
+            String dbg=getIDebugLevel().toString()
             String apiConnection=apiConnected()
             String slastPoll=(debugLevel(4)) ? "${apiConnection} @ ${formatDt(new Date(gtLastDataUpd()))}" : (apiConnection==sFULL) ? 'Succeeded' : (apiConnection==sWARN) ? 'Timed Out' : 'Failed'
 
@@ -1829,7 +1829,7 @@ void generateEventLocalParams(){
     Boolean dbg4= debugLevel(4)
     String apiConnection=apiConnected()
     String slastPoll= dbg4 ? "${apiConnection} @ ${formatDt(new Date(gtLastDataUpd()))}" : (apiConnection==sFULL) ? 'Succeeded' : (apiConnection==sWARN) ? 'Timed Out' : 'Failed'
-    String dbg= settings."debugLevel" == null ? "2" : settings."debugLevel"
+    String dbg= getIDebugLevel().toString()
 
     List<Map> data=[]
     data << [apiConnected: apiConnection]
