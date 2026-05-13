@@ -62,8 +62,12 @@ static String getAutoMowerName()    { return "Husqvarna AutoMower" }
 @Field static final String sCLRGRY    = 'gray'
 @Field static final String sCLRORG    = 'orange'
 @Field static final String sLINEBR    = '<br>'
-@Field static final String sLOST    = 'lost'
-@Field static final String sFULL    = 'full'
+// Connection-state constants for state.connected and apiConnected().
+// Same string values as the legacy cLOST/cFULL/sWARN so persisted state stays valid;
+// c-prefixed names disambiguate them from the same-valued log-level constants below.
+@Field static final String cFULL    = 'full'
+@Field static final String cWARN    = 'warn'
+@Field static final String cLOST    = 'lost'
 @Field static final String sBOOL    = 'bool'
 @Field static final String sENUM    = 'enum'
 @Field static final String sPOLL    = 'poll'
@@ -136,10 +140,10 @@ void initialize(){
     if((String)state.authToken && (Boolean)state.initialized) {
         Long timeBeforeExpiry= state.authTokenExpires ? (Long)state.authTokenExpires - wnow() : 0L
         if(timeBeforeExpiry > 0) {
-            //state.connected=sFULL
+            //state.connected=cFULL
             apiRestored(false)
         }else apiLost("initialize found expired token")
-    }else state.connected=sWARN
+    }else state.connected=cWARN
 
     updateMyLabel()
     state.reAttempt=0
@@ -1019,7 +1023,7 @@ Boolean weAreLost(String msgH, String meth){
     if(!(String)state.authToken){
         apiLost(msgH+"weAreLost() found no auth token, called by ${meth}")
     }
-    if(apiConnected() == sLOST){
+    if(apiConnected() == cLOST){
         msg += "found connection lost to husqvarna | "
         if( refreshAuthToken(meth) ){
             msg += " - Was able to recover the lost connection. Please ignore any notifications received. | "
@@ -1735,7 +1739,7 @@ Boolean updateMowerChildren(){
         if(srcMap){
             String dbg=getIDebugLevel().toString()
             String apiConnection=apiConnected()
-            String slastPoll=(debugLevel(4)) ? "${apiConnection} @ ${formatDt(new Date(gtLastDataUpd()))}" : (apiConnection==sFULL) ? 'Succeeded' : (apiConnection==sWARN) ? 'Timed Out' : 'Failed'
+            String slastPoll=(debugLevel(4)) ? "${apiConnection} @ ${formatDt(new Date(gtLastDataUpd()))}" : (apiConnection==cFULL) ? 'Succeeded' : (apiConnection==cWARN) ? 'Timed Out' : 'Failed'
 
             Boolean moving=(String)srcMap.attributes.mower.activity in [ 'MOWING', 'GOING_HOME', 'LEAVING' ]
             Boolean onMain=(String)srcMap.attributes.mower.activity in [ 'CHARGING', 'PARKED_IN_CS' ]
@@ -1829,7 +1833,7 @@ void generateEventLocalParams(){
     Boolean dbg2= debugLevel(2)
     Boolean dbg4= debugLevel(4)
     String apiConnection=apiConnected()
-    String slastPoll= dbg4 ? "${apiConnection} @ ${formatDt(new Date(gtLastDataUpd()))}" : (apiConnection==sFULL) ? 'Succeeded' : (apiConnection==sWARN) ? 'Timed Out' : 'Failed'
+    String slastPoll= dbg4 ? "${apiConnection} @ ${formatDt(new Date(gtLastDataUpd()))}" : (apiConnection==cFULL) ? 'Succeeded' : (apiConnection==cWARN) ? 'Timed Out' : 'Failed'
     String dbg= getIDebugLevel().toString()
 
     List<Map> data=[]
@@ -1837,8 +1841,8 @@ void generateEventLocalParams(){
     data << [lastPoll: slastPoll]
     data << ["debugLevel": dbg]
 
-    String LOGtype= apiConnection==sLOST ? sERROR : (apiConnection==sWARN ? sWARN : sINFO)
-    Integer lvl= apiConnection==sLOST ? 2 : (apiConnection==sWARN ? 2 : 4)
+    String LOGtype= apiConnection==cLOST ? sERROR : (apiConnection==cWARN ? sWARN : sINFO)
+    Integer lvl= apiConnection==cLOST ? 2 : (apiConnection==cWARN ? 2 : 4)
     Boolean a= lvl == 2 ? dbg2 : dbg4
     if(a){
         LOG("Updating API status with ${data}${LOGtype==sWARN ? " - will retry" : ''}", lvl, LOGtype)
@@ -2128,7 +2132,7 @@ Boolean refreshAuthToken(String meth, child=null){
                     LOG("refreshAuthToken() - Success! Token expires in ${String.format("%.2f",ndata.expires_in/60)} minutes", 3, sINFO, null, child) // 3
 
                     // Tell the children that we are once again connected to the AutoConnect API Cloud
-                    if(apiConnected() != sFULL){ apiRestored(false) }
+                    if(apiConnected() != cFULL){ apiRestored(false) }
 
                     checkPolls(msgH)
                 }else{
@@ -2163,8 +2167,8 @@ Boolean refreshAuthToken(String meth, child=null){
                 LOG(msgH+"Setting up runIn for refreshAuthToken", 2, sTRACE, null, child) // 4
                 Integer retryFactor= attempts > 12 ? 12 : attempts
                 runIn(iREATTEMPTINTERVAL*retryFactor, retryHelper, [overwrite: true])
-                if(attempts > 3 && apiConnected() == sFULL){
-                    state.connected=sWARN
+                if(attempts > 3 && apiConnected() == cFULL){
+                    state.connected=cWARN
                     updateMyLabel()
                     generateEventLocalParams()
                 }
@@ -2374,12 +2378,12 @@ static String getTimestamp(){
 }
 
 String apiConnected(){
-    // values can be sFULL, sWARN, sLOST
-    if(!(String)state.connected){ state.connected=sWARN; updateMyLabel(); return sWARN }else{ return (String)state.connected }
+    // values can be cFULL, cWARN, cLOST
+    if(!(String)state.connected){ state.connected=cWARN; updateMyLabel(); return cWARN }else{ return (String)state.connected }
 }
 
 void apiRestored(Boolean chkP=true){
-    state.connected=sFULL
+    state.connected=cFULL
     updateMyLabel()
     unschedule("notifyApiLostHelper")
     unschedule("notifyApiLost")
@@ -2409,19 +2413,19 @@ Map getDebugDump(){
 }
 
 void apiLost(String where="[where not specified]"){
-    if(apiConnected() == sLOST){
+    if(apiConnected() == cLOST){
         LOG("apiLost($where) - already in lost state.", 5, sTRACE)
     }else{
         LOG("apiLost() - ${where}: Lost connection with API.", 1, sERROR)
         state.apiLostDump=getDebugDump()
-        state.connected=sLOST
+        state.connected=cLOST
         updateMyLabel()
     }
     runIn(15, notifyApiLostHelper, [overwrite: true])
 }
 
 void notifyApiLostHelper(){
-    if( (String)state.connected == sLOST ){
+    if( (String)state.connected == cLOST ){
         LOG("Unscheduling Polling and refreshAuthToken. User MUST reintialize the connection with AutoConnect by running the AutoMower Manager App and logging in again", 0, sERROR)
         generateEventLocalParams() // Update the connection status
         // put a log for each child that we are lost
@@ -2439,7 +2443,7 @@ void notifyApiLostHelper(){
 }
 
 void notifyApiLost(){
-    if( (String)state.connected == sLOST ){
+    if( (String)state.connected == cLOST ){
         generateEventLocalParams()
         String notificationMessage="Your AutoMower Manager mower${((List<String>)settings.mowers)?.size()>1?'s are':' is'} disconnected AutoConnect. Please go to the AutoMower Manager and re-enter your AutoConnect account login credentials."
         sendMessage(notificationMessage)
@@ -2475,13 +2479,13 @@ void updateMyLabel(){
     String newLabel
     String key=(String)state.connected
     switch (key){
-        case sFULL:
+        case cFULL:
             newLabel=myLabel + "<span style=\"color:green\"> Online</span>"
             break
-        case sWARN:
+        case cWARN:
             newLabel=myLabel + "<span style=\"color:orange\"> Warning</span>"
             break
-        case sLOST:
+        case cLOST:
             newLabel=myLabel + "<span style=\"color:red\"> Offline</span>"
             break
         default:
