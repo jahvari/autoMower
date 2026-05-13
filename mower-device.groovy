@@ -259,13 +259,11 @@ def generateEvent(List<Map<String,Object>> updates){
                             desc= name + " is " + sendValue
                             if(name.endsWith("TimeStamp") || name.endsWith("NextStart")){
                                 if(sendValue != sNULL && sendValue != 'null' && sendValue != "0"){
-                                    Long t,n
-                                    t= sendValue.toLong()
-                                    n= wnow()
+                                    Long t= sendValue.toLong()
                                     if(name.endsWith("NextStart")){
-                                        t -= mTZ().getOffset(n) + Math.round(
-                                                mTZ().getOffset(t)-mTZ().getOffset(n)*1.0D )
-
+                                        // Husqvarna returns nextStartTimestamp as local-time-as-epoch;
+                                        // subtract the local zone offset to convert to true UTC ms.
+                                        t -= mTZ().getOffset(t)
                                     }
                                     Date aa= new Date(t)
                                     desc= name + " is " + formatDt(aa)
