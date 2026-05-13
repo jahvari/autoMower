@@ -737,7 +737,7 @@ void wsEvtHandler(Map evt){
                             didChg=true
                         }else{
                          */
-                            if((String)it.key in ['calendar','position','battery','mower','metadata','planner','statistics','message','position', 'cuttingHeight', 'headlight']){
+                            if((String)it.key in ['calendar','position','battery','mower','metadata','planner','statistics','message','cuttingHeight','headlight']){
                                 ma[it.key]=it.value
                                 didChg=true
                             }else{
