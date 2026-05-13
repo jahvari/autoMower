@@ -123,7 +123,7 @@ def parse(String description){
 
 def refresh(Boolean force=false){
     // No longer require forcePoll on every refresh - just get whatever has changed
-    LOG("refresh() - calling pollChildren ${force?(force):sBLANK}, deviceId= ${getDeviceId()}",2,sINFO)
+    LOG("refresh() - calling pollChildren ${force ?: sBLANK}, deviceId= ${getDeviceId()}",2,sINFO)
     parent.pollFromChild(getDeviceId(), force) // tell parent to just poll me silently -- can't pass child/this for some reason
 }
 
