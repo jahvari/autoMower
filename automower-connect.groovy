@@ -2231,8 +2231,7 @@ Boolean debugLevel(Integer level=3){
 void debugEvent(String message, Boolean displayEvent=false){
     Map results=[
         name: 'appdebug',
-        descriptionText: message,
-        displayed: displayEvent
+        descriptionText: message
     ]
     if( debugLevel(4) ){ LOG("Generating AppDebug Event: ${results}", 3, sDEBUG) }
     sendEvent(results)

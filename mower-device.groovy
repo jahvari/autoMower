@@ -493,7 +493,6 @@ void debugEvent(message, Boolean displayEvent= false){
     def results= [
         name: "appdebug",
         descriptionText: message,
-        displayed: displayEvent,
         isStateChange: true
     ]
     if( debugLevel(4) ){ log.debug "Generating AppDebug Event: ${results}" }
