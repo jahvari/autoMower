@@ -707,7 +707,10 @@ void wsEvtHandler(Map evt){
                             didChg=true
                         }else{
                          */
-                            if((String)it.key in ['calendar','position','battery','mower','metadata','planner','statistics','message','cuttingHeight','headlight']){
+                            // Accept both V2 shapes: events may deliver cuttingHeight/headlight as
+                            // top-level attribute keys, or nested under 'settings' matching the REST
+                            // /mowers response. We accept either and the readers fall back across both.
+                            if((String)it.key in ['calendar','position','battery','mower','metadata','planner','statistics','message','cuttingHeight','headlight','settings']){
                                 ma[it.key]=it.value
                                 didChg=true
                             }else{
@@ -1789,8 +1792,13 @@ Boolean updateMowerChildren(){
             flist << ['holdUntilNext': holdUntilNext]
             flist << ['holdIndefinite': holdIndefinite]
 
-            flist << ['cuttingHeight': srcMap.attributes.settings.cuttingHeight] // Level
-            flist << ['headlight': srcMap.attributes.settings.headlight.mode]
+            // Read from both possible event shapes: V2 events may deliver these directly under
+            // attributes (top-level) or nested under attributes.settings to match the REST API.
+            def ch=srcMap.attributes.cuttingHeight ?: srcMap.attributes.settings?.cuttingHeight
+            if(ch != null) flist << ['cuttingHeight': ch] // Level
+            def hlMap=srcMap.attributes.headlight ?: srcMap.attributes.settings?.headlight
+            def hl=hlMap instanceof Map ? hlMap.mode : hlMap
+            if(hl != null) flist << ['headlight': hl]
 
             try {
                 flist << ['numberOfChargingCycles': srcMap.attributes.statistics.numberOfChargingCycles]
