@@ -195,7 +195,7 @@ def generateEvent(List<Map<String,Object>> updates){
                 // attributes that aren't applicable to a given mower (e.g. errorCode
                 // not present in the API response), and value.toString() would NPE.
                 if(value == null && !(name in ['id','forced'])) return
-                String sendValue= value?.toString()
+                String sendValue= value
                 Boolean isChange
                 isChange=false
                 if(!(name in ['id','forced']) && value!=null)

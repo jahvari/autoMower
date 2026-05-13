@@ -553,7 +553,7 @@ Boolean testForDeviceHandlers(){
         }
     }
 
-    String DNIAdder=wnow().toString()
+    String DNIAdder=wnow()
     String d1Str="dummyMowerDNI-${DNIAdder}"
     def d1
     Boolean success
@@ -1032,7 +1032,7 @@ static String connectionStatus(String message, Boolean close=false){
     ${redirectHtml}
 </body>
 </html>
-""".toString()
+"""
     return html
 }
 
@@ -1775,7 +1775,7 @@ Boolean updateMowerChildren(){
         List<Map> flist=[]
         Map srcMap=getMowerMap(mower)
         if(srcMap){
-            String dbg=getIDebugLevel().toString()
+            String dbg=getIDebugLevel()
             String apiConnection=apiConnected()
             String slastPoll=(debugLevel(4)) ? "${apiConnection} @ ${formatDt(new Date(gtLastDataUpd()))}" : (apiConnection==cFULL) ? 'Succeeded' : (apiConnection==cWARN) ? 'Timed Out' : 'Failed'
 
@@ -1872,7 +1872,7 @@ void generateEventLocalParams(){
     Boolean dbg4= debugLevel(4)
     String apiConnection=apiConnected()
     String slastPoll= dbg4 ? "${apiConnection} @ ${formatDt(new Date(gtLastDataUpd()))}" : (apiConnection==cFULL) ? 'Succeeded' : (apiConnection==cWARN) ? 'Timed Out' : 'Failed'
-    String dbg= getIDebugLevel().toString()
+    String dbg= getIDebugLevel()
 
     List<Map> data=[]
     data << [apiConnected: apiConnection]
