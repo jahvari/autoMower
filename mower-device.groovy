@@ -60,8 +60,13 @@ metadata{
         attribute 'errorCode',        'STRING' // current error code
         attribute 'errorCodeS',        'STRING' // current error code
         attribute 'errorTimeStamp',    'NUMBER' // (EPOCH LONG)
+        attribute 'isErrorConfirmable', 'STRING' // TRUE or FALSE - confirmable via Connect app/API
+        attribute 'inactiveReason',    'STRING' // NONE, PLANNING, SEARCHING_FOR_SATELLITES
+        attribute 'workAreaId',        'NUMBER' // work area the mower is going to (only if supported)
         attribute 'plannerNextStart',    'NUMBER' // (EPOCH LONG)
         attribute 'plannerOverride',    'STRING' // Override Action
+        attribute 'restrictedReason',    'STRING' // NONE, WEEK_SCHEDULE, PARK_OVERRIDE, SENSOR, DAILY_LIMIT, FOTA, FROST, ALL_WORK_AREAS_COMPLETED, EXTERNAL
+        attribute 'externalReason',    'NUMBER' // numeric code; only set when restrictedReason == EXTERNAL
         attribute 'name', 'STRING'
         attribute 'model', 'STRING'
         attribute 'serialNumber', 'STRING'

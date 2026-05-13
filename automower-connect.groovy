@@ -1796,8 +1796,20 @@ Boolean updateMowerChildren(){
             flist << ['errorCode':    errC ] // STRING
             flist << ['errorCodeS':    hasErr && errC!=sNULL && errCodes[errC]!=null ? errCodes[errC] : 'Not set' ] // STRING
             flist << ['errorTimeStamp': srcMap.attributes.mower.errorCodeTimestamp] // (EPOCH LONG)
+            // V2 mower-event fields; not present on every mower so guard against null
+            def isErrConf=srcMap.attributes.mower.isErrorConfirmable
+            if(isErrConf != null) flist << ['isErrorConfirmable': isErrConf]
+            def inactRsn=srcMap.attributes.mower.inactiveReason
+            if(inactRsn != null) flist << ['inactiveReason': inactRsn]
+            def wkArea=srcMap.attributes.mower.workAreaId
+            if(wkArea != null) flist << ['workAreaId': wkArea]
             flist << ['plannerNextStart': srcMap.attributes.planner.nextStartTimestamp] // (EPOCH LONG)
             flist << ['plannerOverride'    : srcMap.attributes.planner.override.action] // Override Action
+            // V2 planner-event fields; restrictedReason is always set, externalReason only when EXTERNAL
+            def restRsn=srcMap.attributes.planner.restrictedReason
+            if(restRsn != null) flist << ['restrictedReason': restRsn]
+            def extRsn=srcMap.attributes.planner.externalReason
+            if(extRsn != null) flist << ['externalReason': extRsn]
 
             flist << ['motion': moving ? 'active' : 'inactive']
             flist << ['powerSource': onMain ? 'mains' : 'battery'] // "battery", "dc", "mains", "unknown"
