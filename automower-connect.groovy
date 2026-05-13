@@ -1129,7 +1129,7 @@ Map<String,String> getAutoMowers(Boolean frc=false, String meth="followup", Bool
                 }else{
                     LOG(msgH + "httpGet() in else: http status: ${resp.status}", 1, sTRACE)
                     //refresh the auth token
-                    if(resp.status == 500){ //} && resp.data?.status?.code == 14){
+                    if(resp.status in [401, 403, 500]){ //} && resp.data?.status?.code == 14){
                         if(!isRetry){
                             LOG(msgH + "Refreshing auth_token!", 3, sTRACE)
                             if(refreshAuthToken('getAutoMowers')){
@@ -1224,7 +1224,7 @@ Boolean sendCmdToHusqvarna(String mowerId, Map data, Boolean isRetry=false, Stri
             }else{
                 LOG(msgH + "httpPost() in else: http status: ${resp.status}", 1, sTRACE)
                 //refresh the auth token
-                if(resp.status == 500){ //} && resp.data?.status?.code == 14){
+                if(resp.status in [401, 403, 500]){ //} && resp.data?.status?.code == 14){
                     //LOG(msgH + "Storing the failed action to try later", 1, sTRACE)
                     //state.action="getAutoMowers"
                     if(!isRetry){
