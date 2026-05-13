@@ -1846,7 +1846,7 @@ void generateEventLocalParams(){
 
     String LOGtype= apiConnection==sLOST ? sERROR : (apiConnection==sWARN ? sWARN : sINFO)
     Integer lvl= apiConnection==sLOST ? 2 : (apiConnection==sWARN ? 2 : 4)
-    Boolean a= lvl == 2 ? dbg2 : dbg4 // TODO THIS IS STRANGE INTELLIJ bug was debugLevel(lvl)
+    Boolean a= lvl == 2 ? dbg2 : dbg4
     if(a){
         LOG("Updating API status with ${data}${LOGtype==sWARN ? " - will retry" : ''}", lvl, LOGtype)
     }
