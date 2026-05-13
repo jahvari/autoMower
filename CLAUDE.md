@@ -48,6 +48,20 @@ These changes are in the code but have not been tested against a real mower and 
 
 ## Running the linter
 
-If your machine has Node.js: open any `.groovy` file in VS Code with the Groovy Lint extension installed. The Problems panel updates automatically.
+**Easy path:** open any `.groovy` file in VS Code with the Groovy Lint extension installed. The Problems panel updates automatically and respects `.groovylintrc.json`.
 
-If your machine doesn't have Node, you can re-run CodeNarc via direct Java using the bundled CodeNarc jar from the Groovy Lint extension. See [[reference-local-toolchain]] (in the persistent memory) for the exact PowerShell command — it points at the extension's jars and writes a JSON report.
+**Direct CodeNarc from a terminal** (no Node required — uses the jars the VS Code extension already ships):
+
+```powershell
+$pwd2 = (Get-Location).Path
+$lib  = "$env:USERPROFILE\.vscode\extensions\nicolasvuillamy.vscode-groovy-lint-4.2.1\server\node_modules\npm-groovy-lint\lib\java"
+$cp   = (Get-ChildItem "$lib","$lib\groovy\lib" -Filter '*.jar' | ForEach-Object { $_.FullName }) -join ';'
+java -classpath $cp org.codenarc.CodeNarc `
+    "-basedir=$pwd2" `
+    "-includes=**/*.groovy" `
+    "-excludes=codenarc-*.*" `
+    "-rulesetfiles=file:codenarc-ruleset.xml" `
+    "-report=json:codenarc-report.json"
+```
+
+Adjust the `4.2.1` version segment if the Groovy Lint extension version differs. The output `codenarc-report.json` is gitignored.
