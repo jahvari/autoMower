@@ -350,7 +350,7 @@ void park(mins){
         if(parent.sendCmdToHusqvarna((String)state.id, foo)){
             LOG("park($mins) sent",4, sTRACE)
         }
-    } else LOG("start($mins) no minutes specified",1, sERROR)
+    } else LOG("park($mins) no minutes specified",1, sERROR)
 }
 
 void resumeSchedule(){
