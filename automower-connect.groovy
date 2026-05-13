@@ -1807,7 +1807,7 @@ Boolean updateMowerChildren(){
 
             def chld=getChildDevice(mower)
             if(chld){ chld.generateEvent(flist); result=true }
-            else LOG(msgH+'Child device $mower not found', 1, sWARN)
+            else LOG(msgH+"Child device $mower not found", 1, sWARN)
         }else LOG(msgH+"no data from API for mower $mower", 3, sWARN)
     }
     return result
