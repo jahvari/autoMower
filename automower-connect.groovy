@@ -2531,7 +2531,7 @@ private void updTsVal(String key, String dt=sNULL){
     String val=dt ?: getDtNow()
     if(key in svdTSValsFLD){ updServerItem(key, val); return }
 
-    String appId=app.getId().toString()
+    String appId=app.getId()
     Map data=tsDtMapFLD[appId] ?: [:]
     if(key) data[key]=val
     tsDtMapFLD[appId]=data
@@ -2539,7 +2539,7 @@ private void updTsVal(String key, String dt=sNULL){
 }
 
 private void remTsVal(key){
-    String appId=app.getId().toString()
+    String appId=app.getId()
     Map data=tsDtMapFLD[appId] ?: [:]
     if(key){
         if(key instanceof List){
@@ -2562,7 +2562,7 @@ private String getTsVal(String key){
     if(key in svdTSValsFLD){
         return (String)getServerItem(key)
     }
-    String appId=app.getId().toString()
+    String appId=app.getId()
     Map tsMap=tsDtMapFLD[appId]
     if(key && tsMap && tsMap[key]){ return (String)tsMap[key] }
     return sNULL
@@ -2579,7 +2579,7 @@ void updServerItem(String key, val){
     data=atomicState?.serverDataMap
     data=data ?: [:]
     if(key){
-        String appId=app.getId().toString()
+        String appId=app.getId()
         data[key]=val
         atomicState.serverDataMap=data
         serverDataMapFLD[appId]= [:]
@@ -2596,7 +2596,7 @@ void remServerItem(key){
             List<String> aa=(List<String>)key
             aa?.each{ String k-> if(data.containsKey(k)){ data.remove(k) } }
         }else{ if(data.containsKey((String)key)){ data.remove((String)key) } }
-        String appId=app.getId().toString()
+        String appId=app.getId()
         atomicState?.serverDataMap=data
         serverDataMapFLD[appId]= [:]
         serverDataMapFLD=serverDataMapFLD
@@ -2604,7 +2604,7 @@ void remServerItem(key){
 }
 
 def getServerItem(String key){
-    String appId=app.getId().toString()
+    String appId=app.getId()
     Map fdata
     fdata=serverDataMapFLD[appId]
     if(fdata == null) fdata=[:]
