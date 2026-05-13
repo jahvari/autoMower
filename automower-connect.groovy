@@ -1068,7 +1068,7 @@ Map<String,String> getAutoMowers(Boolean frc=false, String meth="followup", Bool
     Boolean myfrc=(!state.mowerData || !state.mowersWithNames)
     Integer lastU=getLastTsValSecs("getAutoUpdDt") // last attempt
     if( (frc && lastU < 60)){ skipIt=true }
-    if( (!frc && lastU < 150) ){ skiptIt=true } // related to getMinMinsBtwPolls
+    if( (!frc && lastU < 150) ){ skipIt=true } // related to getMinMinsBtwPolls
 
     Map<String,String> mowers
     mowers=[:]
