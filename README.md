@@ -69,15 +69,16 @@ Husqvarna's API allows **10,000 requests per month** per application key (and at
 
 This fork extends [imnotbob/autoMower](https://github.com/imnotbob/autoMower) with:
 
-- Several real bug fixes (typo that disabled the API cache, undefined-variable crash in the OAuth error path, NPE risk in the child-device event handler, more)
+- Several real bug fixes (typo that disabled the API cache, undefined-variable crash in the OAuth error path, NPE risk in the child-device event handler, partial-event wipe of cached mower state, more)
 - Full Event-format-V2 compliance (Husqvarna phased out V1 on 2025-02-28)
 - New device attributes exposing V2 fields: `isErrorConfirmable`, `inactiveReason`, `workAreaId`, `restrictedReason`, `externalReason`
 - Cleaner OAuth flow with clearer error messaging when OAuth isn't enabled
 - Token-refresh on HTTP 401/403 (was 500-only)
 - WebSocket `connection-event` logged for diagnostics
-- Multiple code-quality cleanups (dead code, unused locals, redundant `.toString()`, undocumented `displayed:` fields, helper consolidation)
+- **Tokens, refresh tokens, API keys, and API secrets are masked in logs** — safe to share captures for troubleshooting without redacting first
+- Multiple code-quality cleanups (dead code, unused locals, redundant `.toString()`, `!!` boolean coercion, undocumented `displayed:` fields, helper consolidation)
 
-See the commit log for the full list.
+See the commit log for the full list (`git log upstream/main..HEAD` from a checkout).
 
 ## License
 
