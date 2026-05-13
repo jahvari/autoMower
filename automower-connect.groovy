@@ -215,7 +215,7 @@ def mainPage(){
     Boolean readyToInstall //=false
 
     deviceHandlersInstalled=testForDeviceHandlers()
-    readyToInstall=deviceHandlersInstalled
+    readyToInstall=( deviceHandlersInstalled || (Boolean)state.initialized )
 
     dynamicPage(name: "mainPage", title: pageTitle(version.replace('er, v',"er\nV")), install: readyToInstall, uninstall: false, submitOnChange: true){
 
@@ -224,8 +224,6 @@ def mainPage(){
             section(){
                 paragraph "ERROR!\n\nYou MUST add the ${getAutoMowerName()} Device Handlers to the IDE BEFORE running setup."
             }
-        }else{
-            readyToInstall=true
         }
 
         if((Boolean)state.initialized && !(String)state.authToken){
