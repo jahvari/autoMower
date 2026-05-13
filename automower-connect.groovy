@@ -865,8 +865,10 @@ def callback(){
         Map reqP=[
                 uri: tokenUrl,
                 query: null,
-                contentType: "application/x-www-form-urlencoded",
-//                requestContentType: "application/json",
+                // contentType = expected response type (Accept header);
+                // requestContentType = body encoding
+                contentType: "application/json",
+                requestContentType: "application/x-www-form-urlencoded",
                 body: data,
                 timeout: 30
         ]
@@ -875,10 +877,7 @@ def callback(){
             httpPost(reqP){ resp ->
                 if(resp && resp.data && resp.isSuccess()){
 //                    parseAuthResponse(resp)
-                    String kk
-                    resp.data.each{ kk=it.key }
-                    Map ndata=(Map)new JsonSlurper().parseText(kk)
-                    log.debug "ndata : ${ndata}"
+                    Map ndata=(Map)resp.data
 
                     state.refreshToken=ndata.refresh_token
                     state.authToken=ndata.access_token
@@ -2069,7 +2068,10 @@ Boolean refreshAuthToken(String meth, child=null){
         Map refreshParams=[
             uri: getApiEndpoint()+"/token",
             query: null,
-            contentType: "application/x-www-form-urlencoded",
+            // contentType = expected response type (Accept header);
+            // requestContentType = body encoding
+            contentType: "application/json",
+            requestContentType: "application/x-www-form-urlencoded",
             body: data,
             timeout: 30
         ]
@@ -2092,9 +2094,7 @@ Boolean refreshAuthToken(String meth, child=null){
                     if(debugLevelFour) LOG(msgH+'200 Response received - Extracting info.', 4, sTRACE, null, child ) // 4
 
 //                    parseAuthResponse(resp)
-                    String kk
-                    resp.data.each{ kk=it.key }
-                    Map ndata=(Map)new JsonSlurper().parseText(kk)
+                    Map ndata=(Map)resp.data
 //                    log.debug "ndata : ${ndata}"
 
                     String oldAuthToken=aT
