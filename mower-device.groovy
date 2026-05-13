@@ -337,7 +337,6 @@ void parkuntilnext(){
 
 void parkindefinite(){
     LOG("parkindefinite()",3,sTRACE)
-    log.warn "state.id: ${state.id} getDeviceId(): ${getDeviceId()}"
     Map foo= [data:[type:'ParkUntilFurtherNotice']]
     if(parent.sendCmdToHusqvarna((String)state.id, foo)){
         LOG("parkindefinite() sent",4, sTRACE)
