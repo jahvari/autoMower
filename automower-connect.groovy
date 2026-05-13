@@ -322,7 +322,7 @@ Boolean initializeEndpoint() {
             LOG("authPage() --> No OAuth Access token", 3, sERROR, e)
         }
     }
-    return (!!(String)state.accessToken)
+    return ((String)state.accessToken) as Boolean
 }
 
 // Setup OAuth between HE and Husqvarna clouds
