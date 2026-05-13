@@ -425,7 +425,9 @@ static String formatDt(Date dt, Boolean tzChg=true){
 }
 
 String getDeviceId(){
-    String deviceId= ((String)device.deviceNetworkId).split(/\./).last()
+    // DNI equals the Husqvarna mower id (see automower-connect.groovy
+    // createChildrenMowers and the now-removed getMowerDNI). Return it directly.
+    String deviceId= (String)device.deviceNetworkId
     LOG("getDeviceId() returning ${deviceId}", 4)
     return deviceId
 }
