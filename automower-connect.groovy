@@ -104,7 +104,7 @@ mappings {
 }
 
 void installed(){
-    LOG("Installed with settings: ${settings}",1,sTRACE)
+    LOG("Installed with settings: ${redactedSettings()}",1,sTRACE)
     initialize()
 }
 
@@ -117,7 +117,7 @@ void uninstalled(){
 }
 
 void updated(){
-    LOG("Updated with settings: ${settings}",2,sTRACE)
+    LOG("Updated with settings: ${redactedSettings()}",2,sTRACE)
     cleanupStates()
     initialize()
 }
@@ -372,7 +372,7 @@ def authPage(){
 
     // get rid of next button until the user is actually auth'd
     if(!oauthTokenProvided){
-        LOG("authPage() --> Valid 'HE' OAuth Access token (${state.accessToken}), need AutoMower OAuth token", 3, sTRACE)
+        LOG("authPage() --> Valid 'HE' OAuth Access token (${maskTok(state.accessToken)}), need AutoMower OAuth token", 3, sTRACE)
         LOG("authPage() --> RedirectUrl=${redirectUrl}", 5, sINFO)
         return dynamicPage(name: "authPage", title: pageTitle("AutoMower Manager\nHusqvarna API Authentication"), nextPage: sBLANK, uninstall: uninstallAllowed){
             oauthSection()
@@ -384,7 +384,7 @@ def authPage(){
             }
         }
     }else{
-        LOG("authPage() --> Valid OAuth token (${(String)state.authToken})", 3, sTRACE)
+        LOG("authPage() --> Valid OAuth token (${maskTok(state.authToken)})", 3, sTRACE)
         return dynamicPage(name: "authPage", title: pageTitle("AutoMower Manager\nHusqvarna API Authentication"), nextPage: "mainPage", uninstall: uninstallAllowed){
             oauthSection()
             if(getHusqvarnaApiKey() && getHusqvarnaApiSecret()) {
@@ -419,7 +419,7 @@ def mowersPage(params){
     Map mowers=getAutoMowers(true, "mowersPage")
 
     LOG("mowersPage() -> mower list: ${mowers}",5)
-    LOG("mowersPage() starting settings: ${settings}",5)
+    LOG("mowersPage() starting settings: ${redactedSettings()}",5)
     LOG("mowersPage() params passed: ${params}", 5, sTRACE)
 
     dynamicPage(name: "mowersPage", title: pageTitle("AutoMower Manager\nMowers"), params: params, nextPage: sBLANK, content: "mowersPage", uninstall: false){
@@ -442,7 +442,7 @@ def mowersPage(params){
 }
 
 def preferencesPage(){
-    LOG("=====> preferencesPage() entered. settings: ${settings}", 5)
+    LOG("=====> preferencesPage() entered. settings: ${redactedSettings()}", 5)
 
     dynamicPage(name: "preferencesPage", title: pageTitle("AutoMower Manager\nPreferences"), nextPage: sBLANK){
         List echo=[]
@@ -784,6 +784,39 @@ void clearAuthToken(){
     atomicState.authToken=sNULL
 }
 
+// Mask helpers for log statements. The actual value of a token, api key, or
+// api secret has no diagnostic value in logs -- knowing it's set/unset (and
+// in some cases whether it matched a comparison) is enough. Use these
+// whenever an interpolated log string would otherwise contain a secret.
+static String maskTok(Object t){ return t ? '****' : 'null' }
+
+Map redactedSettings(){
+    Map r=[:]
+    (settings as Map).each{ k, v ->
+        r[k] = (k in ['apiKey','apiSecret']) ? maskTok(v) : v
+    }
+    return r
+}
+
+static Map redactedParams(Map params){
+    Map r=[:]; r.putAll(params)
+    if(r.headers instanceof Map){
+        Map h=[:]; h.putAll((Map)r.headers)
+        if(h.Authorization) h.Authorization = '<masked>'
+        if(h['X-Api-Key'])  h['X-Api-Key']  = '<masked>'
+        r.headers = h
+    }
+    if(r.body) r.body = '<masked>'
+    return r
+}
+
+static Map redactedToken(Map m){
+    Map r=[:]; r.putAll(m)
+    if(r.access_token)  r.access_token  = '****'
+    if(r.refresh_token) r.refresh_token = '****'
+    return r
+}
+
 
 
 
@@ -884,7 +917,7 @@ def callback(){
                 body: data,
                 timeout: 30
         ]
-        LOG("callback()-->reqP ${reqP}", 4)
+        LOG("callback()-->reqP ${redactedParams(reqP)}", 4)
         try{
             httpPost(reqP){ resp ->
                 if(resp && resp.data && resp.isSuccess()){
@@ -895,7 +928,7 @@ def callback(){
                     setTokens((String)ndata.access_token, (String)ndata.refresh_token, tt)
 
                     LOG("Expires in ${ndata.expires_in} seconds", 3)
-                    LOG("swapped token: $ndata; state.refreshToken: ${state.refreshToken}; state.authToken: ${(String)state.authToken}", 3)
+                    LOG("swapped token: ${redactedToken(ndata)}; state.refreshToken: ${maskTok(state.refreshToken)}; state.authToken: ${maskTok(state.authToken)}", 3)
                     state.remove('oauthInitState')
                     eMsg= success()
 
@@ -1093,7 +1126,7 @@ Map<String,String> getAutoMowers(Boolean frc=false, String meth="followup", Bool
             timeout: 30
         ]
         if(debugLevel(4)){
-            msg+="http params -- ${deviceListParams} "
+            msg+="http params -- ${redactedParams(deviceListParams)} "
         }
         msg +="HTTPGET "
         if(msg){
@@ -1200,7 +1233,7 @@ Boolean sendCmdToHusqvarna(String mowerId, Map data, Boolean isRetry=false, Stri
     String msg
     msg= sBLANK
     if(debugLevel(4)){
-        msg+="http params -- ${deviceListParams} "
+        msg+="http params -- ${redactedParams(deviceListParams)} "
     }
     msg +="HTTPPOST "
     if(msg){
@@ -2052,7 +2085,7 @@ Boolean refreshAuthToken(String meth, child=null){
     Long timeBeforeExpiry= texp && aT ? texp - wnow() : 0L
     Boolean tokenStillGood
     tokenStillGood=(timeBeforeExpiry > 2000L)
-    msg += "Token is ${tokenStillGood ? "valid" : "invalid"} | texp: ${texp} | timeBeforeExpiry: ${timeBeforeExpiry} | authToken: ${aT} | "
+    msg += "Token is ${tokenStillGood ? "valid" : "invalid"} | texp: ${texp} | timeBeforeExpiry: ${timeBeforeExpiry} | authToken: ${maskTok(aT)} | "
 
     // check to see if token was recently refreshed
     Integer pollingIntrvMin=(gtPollingInterval()+1)*2
@@ -2070,7 +2103,7 @@ Boolean refreshAuthToken(String meth, child=null){
         clearAuthToken()
         tokenStillGood=false
         if(msg){ LOG(msgH + msg, 2, sTRACE); msg=sBLANK }
-        apiLost(msgH+"No refresh Token (${rt}) or expired refresh token ${timeBeforeExpiry} ${texp} | CLEARED authToken due to no refreshToken or expired authToken")
+        apiLost(msgH+"No refresh Token (${maskTok(rt)}) or expired refresh token ${timeBeforeExpiry} ${texp} | CLEARED authToken due to no refreshToken or expired authToken")
     }else{
         msg +='Performing token refresh'
         Map rdata=[grant_type: 'refresh_token', client_id: getHusqvarnaApiKey(), refresh_token: "${rt}"]
@@ -2087,9 +2120,9 @@ Boolean refreshAuthToken(String meth, child=null){
         ]
 
         if(debugLevelFour){
-            msg +="refreshParams=${refreshParams} "
-            msg += "OAUTH Token=state: ${aT} "
-            msg += "Refresh Token=state: ${rt}  "
+            msg +="refreshParams=${redactedParams(refreshParams)} "
+            msg += "OAUTH Token=state: ${maskTok(aT)} "
+            msg += "Refresh Token=state: ${maskTok(rt)}  "
         }
 
         msg += "state.authTokenExpires=${texp}  ${formatDt(new Date(texp))} "
@@ -2121,8 +2154,8 @@ Boolean refreshAuthToken(String meth, child=null){
                     Long tt=wnow() + (ndata.expires_in * 1000)
                     if(debugLevelFour){ // 4
                         msg += "Updated state.authTokenExpires=${tt} "
-                        msg += "Refresh Token=state: ${rt} == in: ${ndata.refresh_token} "
-                        msg += "OAUTH Token=state: ${aT} == in: ${ndata.access_token}"
+                        msg += "Refresh Token=state: ${maskTok(rt)} == in: ${maskTok(ndata.refresh_token)} (${rt == ndata.refresh_token ? 'matched' : 'differed'}) "
+                        msg += "OAUTH Token=state: ${maskTok(aT)} == in: ${maskTok(ndata.access_token)} (${aT == ndata.access_token ? 'matched' : 'differed'})"
                         LOG(msgH+msg, 4, sTRACE, null, child)
                     }
                     setTokens((String)ndata.access_token, (String)ndata.refresh_token, tt)

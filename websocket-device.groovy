@@ -130,7 +130,7 @@ def initialize(){
             logTrace("Scheduled auto - connect for 3 seconds")
             runIn(3,"connect")
         } else{
-            logInfo("Skipping Socket Open... Cookie Data is Missing $state.access_token")
+            logInfo("Skipping Socket Open... Cookie Data is Missing")
         }
     } else{
         logInfo("Skipping Socket Open... autoconnect disabled")
