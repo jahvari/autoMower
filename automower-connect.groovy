@@ -243,11 +243,6 @@ def mainPage(){
         }
 
         if((String)state.authToken && (Boolean)state.initialized){
-            if(((List<String>)settings.mowers)?.size() > 0){
-/*                section(sectionTitle("Helpers")){
-                    href ("helperAppsPage", title: inputTitle("Helper Applications"), description: "'Click' to manage Helper 'Applications'")
-                }*/
-            }
             section(sectionTitle("AutoMower Devices")){
                 Integer howManyMowersSel=((List<String>)settings.mowers)?.size() ?: 0
                 Integer howManyMowers=state.numAvailMowers ?: 0
