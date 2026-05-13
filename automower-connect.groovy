@@ -321,6 +321,7 @@ Boolean initializeEndpoint(Boolean disableRetry=false) {
     if(!accessToken){
         try {
             accessToken=createAccessToken()
+            state.remove('enableOauthError')
         } catch(Exception e){
             LOG("authPage() --> No OAuth Access token", 3, sERROR, e)
         }
@@ -332,8 +333,11 @@ Boolean initializeEndpoint(Boolean disableRetry=false) {
     return (!!(String)state.accessToken)
 }
 
-// try to enable oauth on HE for this app
-private void enableOauth(){
+// Attempt to enable OAuth on this app via the local admin UI. This is not
+// a documented Hubitat API; it can fail on hub models or firmware where the
+// admin port/auth differs. On failure we record the reason in state so the
+// auth page can tell the user to enable OAuth manually in the IDE.
+private Boolean enableOauth(){
     Map params=[
         uri: "http://localhost:8080/app/edit/update?_action_update=Update&oauthEnabled=true&id=${app.appTypeId}".toString(),
         headers: ['Content-Type':'text/html;charset=utf-8']
@@ -342,8 +346,13 @@ private void enableOauth(){
         httpPost(params){ resp ->
             //LogTrace("response data: ${resp.data}")
         }
+        state.remove('enableOauthError')
+        return true
     } catch (e){
-        LOG("enableOauth something went wrong: ", 1, sERROR, e)
+        String reason="${e}".take(200)
+        state.enableOauthError=reason
+        LOG("enableOauth failed -- user must enable OAuth manually in the IDE: ${reason}", 1, sWARN, e)
+        return false
     }
 }
 
@@ -359,11 +368,14 @@ def authPage(){
             LOG("authPage() --> OAuth", 1, sERROR)
             LOG("authPage() --> Probable Cause: OAuth not enabled in Hubitat IDE for the 'AutoMower Manager' 'App'", 1, sWARN)
             LOG("authPage() --> No OAuth Access token", 3, sERROR)
+            String autoEnableNote=(String)state.enableOauthError ?
+                    "\n\nThe app attempted to enable OAuth automatically but the request failed (${state.enableOauthError}). You must enable OAuth manually in the Hubitat IDE." :
+                    sBLANK
             return dynamicPage(name: "authPage", title: pageTitle("AutoMower Manager\nOAuth Initialization Failure"), nextPage: sBLANK, uninstall: true){
                 section(){
                     paragraph "Error initializing AutoMower Authentication: could not get the OAuth access token.\n\nPlease verify that OAuth has been enabled in " +
                             "the Hubitat IDE for the 'AutoMower Manager' 'App', and then try again.\n\nIf this error persists, view Live Logging in the IDE for " +
-                            "additional error information."
+                            "additional error information." + autoEnableNote
                 }
             }
         }
