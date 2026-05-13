@@ -716,7 +716,14 @@ void wsEvtHandler(Map evt){
                             // top-level attribute keys, or nested under 'settings' matching the REST
                             // /mowers response. We accept either and the readers fall back across both.
                             if((String)it.key in ['calendar','position','battery','mower','metadata','planner','statistics','message','cuttingHeight','headlight','settings']){
-                                ma[it.key]=it.value
+                                // Merge rather than replace so partial sub-object updates (e.g. a
+                                // mower-event-v2 that only changes 'state') don't wipe unchanged
+                                // sibling fields like errorCode, activity, mode.
+                                if(it.value instanceof Map && ma[it.key] instanceof Map){
+                                    ((Map)ma[it.key]).putAll((Map)it.value)
+                                } else {
+                                    ma[it.key]=it.value
+                                }
                                 didChg=true
                             }else{
                                 LOG("wsEvtHandler NOT FOUND - type: ${typ} key: ${it.key} value: ${it.value}", 4, sDEBUG)
