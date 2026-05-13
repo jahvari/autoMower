@@ -1578,9 +1578,8 @@ Boolean spawnDaemon(String idaemon="all", Boolean unsched=true){
 
 
 Long gtLastDataUpd(){
-    Long last
-    last= Math.max( ((Long)state.lastPollWS ?: 0L),
-                    ((Long)state.lastPoll ?: 0L) )
+    return Math.max( ((Long)state.lastPollWS ?: 0L),
+                     ((Long)state.lastPoll ?: 0L) )
 }
 
 void clearLastPolls(){
