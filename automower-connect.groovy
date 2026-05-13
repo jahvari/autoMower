@@ -678,7 +678,7 @@ void wsEvtHandler(Map evt){
     fndMower=true
     didChg=false
 
-    String dni=getMowerDNI((String)evt.id)
+    String dni=(String)evt.id
     if(!(dni in (List<String>)settings.mowers)){
         if(dni) LOG("wsEvtHandler DID NOT FIND $dni in settings", 4, sDEBUG)
         fndMower=false
@@ -1101,7 +1101,7 @@ Map<String,String> getAutoMowers(Boolean frc=false, String meth="followup", Bool
 
                     Map<String, Map> mdata=[:]
                     ndata.each{ Map mower ->
-                        String dni=getMowerDNI((String) mower.id)
+                        String dni=(String) mower.id
                         mowers[dni]=getMowerDisplayName(mower)
                         mowersLocation[dni]=getMowerLocation(mower)
                         mdata[dni]=mower
@@ -1239,10 +1239,9 @@ Boolean sendScheduleToHusqvarna(String mowerId, Map data, Boolean isRetry=false)
 
 Map getMowerMap(String tid){
     if(tid){
-        String dni=getMowerDNI(tid)
         Map<String,Map>mowerMap=(Map<String,Map>)state.mowerData
-        if(dni && mowerMap){
-            return mowerMap[dni]
+        if(mowerMap){
+            return mowerMap[tid]
         }
     }
     return null
@@ -1250,17 +1249,11 @@ Map getMowerMap(String tid){
 
 String getMowerName(String tid){
     // Get the name for this mower
-    String DNI=getMowerDNI(tid)
     Map<String,String> mowersWithNames=state.mowersWithNames
     String mowerName
-    mowerName=(mowersWithNames?.containsKey(DNI)) ? mowersWithNames[DNI] : sBLANK
-    if(mowerName == sBLANK){ mowerName=getChildDevice(DNI)?.displayName } // better than displaying 'null' as the name
+    mowerName=(mowersWithNames?.containsKey(tid)) ? mowersWithNames[tid] : sBLANK
+    if(mowerName == sBLANK){ mowerName=getChildDevice(tid)?.displayName } // better than displaying 'null' as the name
     return mowerName
-}
-
-static String getMowerDNI(String tid){
-    return tid
-    //return 'autoconnect-mower-' + ([app.id.toString(), tid].join('.'))
 }
 
 static String getMowerDisplayName(Map mower){
