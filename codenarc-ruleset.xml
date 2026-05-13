@@ -1,0 +1,124 @@
+<ruleset xmlns="http://codenarc.org/ruleset/1.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://codenarc.org/ruleset/1.0 http://codenarc.org/ruleset-schema.xsd">
+    <description>All CodeNarc rules to match npm-groovy-lint "recommended" minus our overrides</description>
+    <ruleset-ref path='rulesets/basic.xml'/>
+    <ruleset-ref path='rulesets/braces.xml'>
+        <exclude name='BracesForMethod'/>
+        <exclude name='BracesForClass'/>
+        <exclude name='BracesForIfElse'/>
+        <exclude name='BracesForForLoop'/>
+        <exclude name='BracesForTryCatchFinally'/>
+        <exclude name='IfStatementBraces'/>
+        <exclude name='ElseBlockBraces'/>
+    </ruleset-ref>
+    <ruleset-ref path='rulesets/concurrency.xml'/>
+    <ruleset-ref path='rulesets/convention.xml'>
+        <exclude name='CompileStatic'/>
+        <exclude name='FactoryMethodName'/>
+        <exclude name='NoDef'/>
+        <exclude name='MethodReturnTypeRequired'/>
+        <exclude name='VariableTypeRequired'/>
+        <exclude name='FieldTypeRequired'/>
+        <exclude name='MethodParameterTypeRequired'/>
+        <exclude name='ImplicitClosureParameter'/>
+        <exclude name='ImplicitReturnStatement'/>
+        <exclude name='PublicMethodsBeforeNonPublicMethods'/>
+        <exclude name='StaticMethodsBeforeInstanceMethods'/>
+        <exclude name='IfStatementCouldBeTernary'/>
+        <exclude name='InvertedIfElse'/>
+        <exclude name='ConfusingTernary'/>
+        <exclude name='CouldBeElvis'/>
+        <exclude name='CouldBeSwitchStatement'/>
+        <exclude name='TrailingComma'/>
+        <exclude name='NoJavaUtilDate'/>
+    </ruleset-ref>
+    <ruleset-ref path='rulesets/design.xml'>
+        <exclude name='Instanceof'/>
+        <exclude name='ReturnsNullInsteadOfEmptyCollection'/>
+        <exclude name='ReturnsNullInsteadOfEmptyArray'/>
+        <exclude name='SimpleDateFormatMissingLocale'/>
+    </ruleset-ref>
+    <ruleset-ref path='rulesets/dry.xml'>
+        <exclude name='DuplicateStringLiteral'/>
+        <exclude name='DuplicateNumberLiteral'/>
+        <exclude name='DuplicateMapLiteral'/>
+        <exclude name='DuplicateListLiteral'/>
+    </ruleset-ref>
+    <ruleset-ref path='rulesets/exceptions.xml'>
+        <exclude name='CatchException'/>
+    </ruleset-ref>
+    <ruleset-ref path='rulesets/formatting.xml'>
+        <exclude name='Indentation'/>
+        <exclude name='SpaceAroundOperator'/>
+        <exclude name='SpaceAfterComma'/>
+        <exclude name='SpaceAfterOpeningBrace'/>
+        <exclude name='SpaceBeforeClosingBrace'/>
+        <exclude name='SpaceAfterIf'/>
+        <exclude name='SpaceAfterFor'/>
+        <exclude name='SpaceAfterWhile'/>
+        <exclude name='SpaceAfterSwitch'/>
+        <exclude name='SpaceAfterCatch'/>
+        <exclude name='SpaceAfterSemicolon'/>
+        <exclude name='SpaceAroundMapEntryColon'/>
+        <exclude name='SpaceBeforeOpeningBrace'/>
+        <exclude name='SpaceAfterClosingBrace'/>
+        <exclude name='SpaceAfterMethodCallName'/>
+        <exclude name='SpaceAfterMethodDeclarationName'/>
+        <exclude name='SpaceAroundClosureArrow'/>
+        <exclude name='SpaceInsideParentheses'/>
+        <exclude name='ConsecutiveBlankLines'/>
+        <exclude name='TrailingWhitespace'/>
+        <exclude name='BlockStartsWithBlankLine'/>
+        <exclude name='BlockEndsWithBlankLine'/>
+        <exclude name='LineLength'/>
+    </ruleset-ref>
+    <ruleset-ref path='rulesets/generic.xml'/>
+    <ruleset-ref path='rulesets/groovyism.xml'>
+        <exclude name='ExplicitCallToEqualsMethod'/>
+        <exclude name='ExplicitCallToCompareToMethod'/>
+        <exclude name='GStringExpressionWithinString'/>
+        <exclude name='GetterMethodCouldBeProperty'/>
+        <exclude name='NoScriptBindings'/>
+    </ruleset-ref>
+    <ruleset-ref path='rulesets/imports.xml'>
+        <exclude name='NoWildcardImports'/>
+    </ruleset-ref>
+    <ruleset-ref path='rulesets/logging.xml'/>
+    <ruleset-ref path='rulesets/naming.xml'>
+        <exclude name='FieldName'/>
+        <exclude name='VariableName'/>
+        <exclude name='MethodName'/>
+        <exclude name='ParameterName'/>
+    </ruleset-ref>
+    <ruleset-ref path='rulesets/security.xml'>
+        <exclude name='InsecureRandom'/>
+    </ruleset-ref>
+    <ruleset-ref path='rulesets/serialization.xml'/>
+    <ruleset-ref path='rulesets/size.xml'>
+        <exclude name='ClassSize'/>
+        <exclude name='MethodSize'/>
+        <exclude name='AbcMetric'/>
+        <exclude name='CyclomaticComplexity'/>
+        <exclude name='CrapMetric'/>
+        <exclude name='NestedBlockDepth'/>
+        <exclude name='MethodCount'/>
+        <exclude name='ParameterCount'/>
+    </ruleset-ref>
+    <ruleset-ref path='rulesets/unnecessary.xml'>
+        <exclude name='UnnecessaryGetter'/>
+        <exclude name='UnnecessaryGString'/>
+        <exclude name='UnnecessaryReturnKeyword'/>
+        <exclude name='UnnecessarySemicolon'/>
+        <exclude name='UnnecessaryPackageReference'/>
+        <exclude name='UnnecessaryDefInFieldDeclaration'/>
+        <exclude name='UnnecessaryDefInMethodDeclaration'/>
+        <exclude name='UnnecessaryDefInVariableDeclaration'/>
+        <exclude name='UnnecessaryObjectReferences'/>
+        <exclude name='UnnecessaryParenthesesForMethodCallWithClosure'/>
+        <exclude name='UnnecessaryElseStatement'/>
+        <exclude name='UnnecessarySetter'/>
+        <exclude name='UnnecessarySelfAssignment'/>
+    </ruleset-ref>
+    <ruleset-ref path='rulesets/unused.xml'/>
+</ruleset>

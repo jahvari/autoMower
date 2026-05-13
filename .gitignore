@@ -12,3 +12,20 @@ autoMower.iml
 .idea/vcs.xml
 
 .idea/workspace.xml
+
+# Auto-generated CodeNarc output (regenerated every lint run; never useful to share)
+codenarc-report.json
+CodeNarcReport.html
+CodeNarcReport.txt
+CodeNarcXmlReport.xml
+CodeNarcJsonReport.json
+
+# OS / editor metadata
+Thumbs.db
+.DS_Store
+.vscode/
+
+# Local secret scratchpads (never commit Husqvarna app keys/secrets)
+*.env
+*.secret
+husqvarna-creds*

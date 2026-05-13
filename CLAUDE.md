@@ -42,5 +42,12 @@ These changes are in the code but have not been tested against a real mower and 
 - JDK 21 LTS (Adoptium Temurin) at user-level: `%LOCALAPPDATA%\Programs\Eclipse Adoptium\jdk-21.x...`
 - Groovy 5.0.6 at `C:\groovy-5.0.6`
 - VS Code with the **Groovy Lint, Format and Fix** extension by Nicolas Vuillamy (uses CodeNarc 3.7)
-- `.groovylintrc.json` at repo root tunes which lint rules apply (Hubitat code triggers many false positives — disable noisy style rules but keep real-bug rules active)
-- `codenarc-ruleset.xml` and `codenarc-report.json` are local artifacts from running CodeNarc directly — not tracked
+- `.groovylintrc.json` at repo root tunes which lint rules apply (Hubitat code triggers many false positives — disable noisy style rules but keep real-bug rules active). Committed so checkouts on other machines get the same lint experience.
+- `codenarc-ruleset.xml` is a hand-written CodeNarc XML matching `.groovylintrc.json` for running CodeNarc directly via Java (no Node required). Committed.
+- `codenarc-report.json` is the auto-generated output of the last lint run; gitignored.
+
+## Running the linter
+
+If your machine has Node.js: open any `.groovy` file in VS Code with the Groovy Lint extension installed. The Problems panel updates automatically.
+
+If your machine doesn't have Node, you can re-run CodeNarc via direct Java using the bundled CodeNarc jar from the Groovy Lint extension. See [[reference-local-toolchain]] (in the persistent memory) for the exact PowerShell command — it points at the extension's jars and writes a JSON report.
