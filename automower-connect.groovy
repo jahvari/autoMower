@@ -358,7 +358,7 @@ def authPage(){
     Boolean success=initializeEndpoint()
     if(!success) {
         if(!state.accessToken){
-            LOG("authPage() --> OAuth", 1, sERROR, e)
+            LOG("authPage() --> OAuth", 1, sERROR)
             LOG("authPage() --> Probable Cause: OAuth not enabled in Hubitat IDE for the 'AutoMower Manager' 'App'", 1, sWARN)
             LOG("authPage() --> No OAuth Access token", 3, sERROR)
             return dynamicPage(name: "authPage", title: pageTitle("AutoMower Manager\nOAuth Initialization Failure"), nextPage: sBLANK, uninstall: true){
