@@ -175,7 +175,7 @@ void initialize(){
     if(aOK && myMowers)
         Boolean a=updateMowerChildren()
 
-    subscribe(location, "systemStart", rebooted)                    // re-initialize if the hub reboots
+    // Hubitat invokes hubStartupHandler() automatically on hub startup; no explicit subscription needed.
 
     state.inPollChildren=false
     state.remove('inPollChildren')
@@ -197,7 +197,7 @@ void initialize(){
     if(aOK) runIn(8, sPOLL, [overwrite: true])
 }
 
-void rebooted(evt){
+void hubStartupHandler(){
     LOG("Hub rebooted, re-initializing", 2, sTRACE)
     initialize()
 }
