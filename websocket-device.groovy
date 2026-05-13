@@ -343,21 +343,6 @@ static String getObjType(obj){
     else{ return "unknown"}
 }
 
-Map getDeviceMetrics(){
-    Map out= [:]
-    def cntItems= state?.findAll{ it?.key?.startsWith("use_") }
-    def errItems= state?.findAll{ it?.key?.startsWith("err_") }
-    if(cntItems?.size()){
-        out["usage"]= [:]
-        cntItems?.each{ k,v -> out.usage[k?.toString()?.replace("use_", sBLANK) as String]= v as Integer ?: 0 }
-    }
-    if(errItems?.size()){
-        out["errors"]= [:]
-        errItems?.each{ k,v -> out.errors[k?.toString()?.replace("err_", sBLANK) as String]= v as Integer ?: 0 }
-    }
-    return out
-}
-
 // FIELD VARIABLE FUNCTIONS
 private void updMemStoreItem(String key, val){
     String appId= device.getId()
