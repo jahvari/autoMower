@@ -726,12 +726,6 @@ void wsEvtHandler(Map evt){
             case 'mower-event-v2':
             case 'planner-event-v2':
             case 'position-event-v2':
-
-            case 'status-event':
-
-            case 'positions-event':
-
-            case 'settings-event':
                 if(evt.attributes){
                     Map ma= (Map)mdata[dni].attributes
                     ((Map)evt.attributes).each {
