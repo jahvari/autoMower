@@ -2530,6 +2530,13 @@ static String getFormat(String type, String myText=sBLANK){
     }
 }
 
+// NOTE: getDtNow/formatDt/mTZ/span and log helpers are duplicated in
+// mower-device.groovy because Hubitat apps and device drivers run in
+// separate contexts and cannot share Groovy code directly without a
+// Hubitat library file. Keep all three files in sync when changing any
+// of these helpers. websocket-device.groovy intentionally uses a
+// different formatDt signature (with an mdy flag) and is NOT a copy.
+
 static String getDtNow(){
     Date now=new Date()
     return formatDt(now)
@@ -2537,7 +2544,7 @@ static String getDtNow(){
 
 static String formatDt(Date dt, Boolean tzChg=true){
     SimpleDateFormat tf=new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy")
-    if(tzChg) if(mTZ()){ tf.setTimeZone(mTZ()) }
+    if(tzChg){ if(mTZ()){ tf.setTimeZone(mTZ()) } }
     return (String)tf.format(dt)
 }
 

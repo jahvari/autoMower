@@ -258,6 +258,12 @@ Boolean minVersionFailed(){
     } */
 }
 
+// NOTE: This formatDt is INTENTIONALLY different from the formatDt in
+// automower-connect.groovy / mower-device.groovy. It takes an 'mdy' flag
+// and supports a "MMM d, yyyy - h:mm:ss a" format used for log-history
+// timestamps. Do NOT replace with the app/device version. mTZ and
+// getDtNow are kept colocated for the same reason.
+
 static String getDtNow(){
     Date now= new Date()
     return formatDt(now, false)

@@ -415,6 +415,13 @@ void on(){
     LOG('on()', 4, sTRACE)
     resumeSchedule()
 }
+// NOTE: getDtNow/formatDt/mTZ/span and log helpers below duplicate the
+// same helpers in automower-connect.groovy. Hubitat apps and device
+// drivers run in separate contexts and cannot share code directly.
+// Keep both files in sync when changing any of these helpers.
+// websocket-device.groovy intentionally has a different formatDt
+// (with an mdy flag) and is NOT a copy of this version.
+
 private static TimeZone mTZ(){ return TimeZone.getDefault() } // (TimeZone)location.timeZone
 
 static String getDtNow(){
