@@ -224,7 +224,7 @@ def webSocketStatus(String status){
 
 
 def parse(message){
-     log.debug("parsed ${message}")
+    logDebug("parsed ${message}")
 
     parent.wsEvtHandler( (Map)new JsonSlurper().parseText(message) )
 
