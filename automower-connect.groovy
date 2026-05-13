@@ -722,7 +722,7 @@ void wsEvtHandler(Map evt){
             case 'calendar-event-v2':
             case 'cuttingHeight-event-v2':
             case 'headlights-event-v2':
-            case 'messages-event-v2':
+            case 'message-event-v2':
             case 'mower-event-v2':
             case 'planner-event-v2':
             case 'position-event-v2':
