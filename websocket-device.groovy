@@ -237,7 +237,6 @@ def parse(message){
 
 
 
-String getCookieVal(){ return state.cookie ?: sNULL }
 
 Integer stateSize(){ String j= new groovy.json.JsonOutput().toJson((Map)state); return j?.length() }
 Integer stateSizePerc(){ return (int) ((stateSize() / 100000)*100).toDouble().round(0) }
