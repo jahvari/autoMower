@@ -666,6 +666,13 @@ void wsEvtHandler(Map evt){
 
     LOG("wsEvtHandler evt: ${evt}", 4, sDEBUG)
 
+    // connection-event is sent by Husqvarna once the WebSocket handshake completes.
+    // It carries {ready, connectionId} and has no mower id; just log it for diagnostics.
+    if((String)evt.type == 'connection-event'){
+        LOG("wsEvtHandler connection-event ready=${evt.ready} connectionId=${evt.connectionId}", 2, sINFO)
+        return
+    }
+
 //    state.numAvailMowers=((List<Map>)ndata)?.size() ?: 0
     Boolean fndMower,didChg
     fndMower=true
