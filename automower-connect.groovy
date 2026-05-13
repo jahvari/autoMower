@@ -1175,7 +1175,7 @@ Boolean sendCmdToHusqvarna(String mowerId, Map data, Boolean isRetry=false, Stri
             "X-Api-Key":getHusqvarnaApiKey()
         ],
         query: null,
-        body: new JsonOutput().toJson(data),
+        body: JsonOutput.toJson(data),
         timeout: 30
     ]
     String msg

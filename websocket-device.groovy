@@ -238,7 +238,7 @@ def parse(message){
 
 
 
-Integer stateSize(){ String j= new groovy.json.JsonOutput().toJson((Map)state); return j?.length() }
+Integer stateSize(){ String j= groovy.json.JsonOutput.toJson((Map)state); return j?.length() }
 Integer stateSizePerc(){ return (int) ((stateSize() / 100000)*100).toDouble().round(0) }
 
 // public String gitBranch(){
