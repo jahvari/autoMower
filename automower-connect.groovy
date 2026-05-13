@@ -130,8 +130,6 @@ void initialize(){
 
     if(settings.pollingInterval == null){ app.updateSetting('pollingInterval', "15") }
 
-    Integer tt=randomSeed.nextInt(100)    // get the random number generator going
-
     state.inPollChildren=true
     state.skipTime=wnow()
 
@@ -1350,7 +1348,6 @@ String getChildAppName(String childId){
 
 static String cleanAppName(String name){
     if(name){
-        String cleanName
         Integer idx=name.indexOf('<span')
         return ((idx > 0) ? name.substring(0, idx) : name).trim()
     }
@@ -1396,13 +1393,10 @@ void scheduledWatchdog(evt=null, Boolean local=false, String meth="schedule/runi
 
     Long oldLast
     oldLast=state.lastScheduledWatchdog
-    String oldLastS
-    oldLastS=state.lastScheduledWatchdogDate
 
     // Check to see if we have called too soon
     if(!state.lastScheduledWatchdog){
         oldLast= wnow() - 3600001L
-        oldLastS= sNULL
     }
 
     state.lastScheduledWatchdog=wnow()
@@ -1656,8 +1650,6 @@ Boolean pollChildren(String deviceId=sBLANK,Boolean force=false, Boolean isSched
         updated()
         return result
     }
-
-    Boolean debugLevelFour=debugLevel(4)
 
     Long last= gtLastDataUpd()
 
