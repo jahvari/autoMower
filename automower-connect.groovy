@@ -767,6 +767,23 @@ String getCookieS(){
     return (String)state.authToken
 }
 
+// Token state is dual-written: state.* persists at end-of-method (used by the
+// app itself), atomicState.* commits immediately (read by the websocket child
+// driver via parent.getCookieS-friendly accessors before the app's state has
+// flushed). Centralize the write so the two never drift.
+void setTokens(String accessToken, String refreshToken, Long expiresEpoch){
+    state.authToken=accessToken
+    state.refreshToken=refreshToken
+    state.authTokenExpires=expiresEpoch
+    atomicState.authToken=accessToken
+    atomicState.refreshToken=refreshToken
+}
+
+void clearAuthToken(){
+    state.authToken=sNULL
+    atomicState.authToken=sNULL
+}
+
 
 
 
@@ -874,15 +891,8 @@ def callback(){
 //                    parseAuthResponse(resp)
                     Map ndata=(Map)resp.data
 
-                    state.refreshToken=ndata.refresh_token
-                    state.authToken=ndata.access_token
                     Long tt= wnow() + (ndata.expires_in * 1000)
-                    //log.error "tt is ${tt}"
-                    state.authTokenExpires=tt
-                    atomicState.refreshToken=ndata.refresh_token
-                    atomicState.authToken=ndata.access_token
-                    //atomicState.authTokenExpires=tt
-                    //log.error "state.authTokenExpires is ${state.authTokenExpires}"
+                    setTokens((String)ndata.access_token, (String)ndata.refresh_token, tt)
 
                     LOG("Expires in ${ndata.expires_in} seconds", 3)
                     LOG("swapped token: $ndata; state.refreshToken: ${state.refreshToken}; state.authToken: ${(String)state.authToken}", 3)
@@ -2057,7 +2067,7 @@ Boolean refreshAuthToken(String meth, child=null){
     msg += "Want to refresh token | "
     def rt= atomicState.refreshToken
     if(!rt || timeBeforeExpiry < 30L){
-        state.authToken=sNULL
+        clearAuthToken()
         tokenStillGood=false
         if(msg){ LOG(msgH + msg, 2, sTRACE); msg=sBLANK }
         apiLost(msgH+"No refresh Token (${rt}) or expired refresh token ${timeBeforeExpiry} ${texp} | CLEARED authToken due to no refreshToken or expired authToken")
@@ -2115,12 +2125,7 @@ Boolean refreshAuthToken(String meth, child=null){
                         msg += "OAUTH Token=state: ${aT} == in: ${ndata.access_token}"
                         LOG(msgH+msg, 4, sTRACE, null, child)
                     }
-                    state.authTokenExpires=tt
-                    state.refreshToken=ndata.refresh_token
-                    state.authToken=ndata.access_token
-                    //atomicState.authTokenExpires=tt
-                    atomicState.refreshToken=ndata.refresh_token
-                    atomicState.authToken=ndata.access_token
+                    setTokens((String)ndata.access_token, (String)ndata.refresh_token, tt)
                     tokenStillGood=true
 
                     def dev= getSocketDevice()
@@ -2156,7 +2161,7 @@ Boolean refreshAuthToken(String meth, child=null){
             attempts= attempts!=null ? attempts+1 : 1
             state.reAttempt=attempts
             if(attempts > maxAttempt || timeBeforeExpiry < 1L){
-                state.authToken=sNULL
+                clearAuthToken()
                 tokenStillGood=false
                 apiLost(msgH+"CLEARING AUTH TOKEN - Too many retries (${state.reAttempt - 1}) for token refresh, or expired auth token ${timeBeforeExpiry} ${state.authTokenExpires}")
                 def dev= getSocketDevice()
