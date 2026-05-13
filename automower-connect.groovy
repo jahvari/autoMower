@@ -2506,25 +2506,18 @@ static String getFormat(String type, String myText=sBLANK){
     switch(type){
         case "header-ecobee":
             return "<div style='color:#FFFFFF;background-color:#5BBD76;padding-left:0.5em;box-shadow: 0px 3px 3px 0px #b3b3b3'>${theMower()}${myText}</div>"
-            break
         case "header-nobee":
             return "<div style='width:50%;min-width:400px;color:#FFFFFF;background-color:#5BBD76;padding-left:0.5em;padding-right:0.5em;box-shadow: 0px 3px 3px 0px #b3b3b3'>${myText}</div>"
-            break
         case "line":
             return "<hr style='background-color:#5BBD76; height: 1px; border: 0;'></hr>"
-            break
         case "title":
             return "<h2 style='color:#5BBD76;font-weight: bold'>${myText}</h2>"
-            break
         case "warning":
             return "<span style='color:red'><b>WARNING: </b><i></span>${myText}</i>"
-            break
         case "note":
             return "<b>NOTE: </b>${myText}"
-            break
         default:
             return myText
-            break
     }
 }
 
