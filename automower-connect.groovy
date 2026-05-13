@@ -1791,15 +1791,17 @@ Boolean updateMowerChildren(){
             def hl=hlMap instanceof Map ? hlMap.mode : hlMap
             if(hl != null) flist << ['headlight': hl]
 
-            try {
-                flist << ['numberOfChargingCycles': srcMap.attributes.statistics.numberOfChargingCycles]
-                flist << ['numberOfCollisions': collisions]
-                flist << ['totalChargingTime': srcMap.attributes.statistics.totalChargingTime / 3600]
-                flist << ['totalCuttingTime': srcMap.attributes.statistics.totalCuttingTime / 3600]
-                flist << ['totalRunningTime': srcMap.attributes.statistics.totalRunningTime / 3600]
-                flist << ['totalSearchingTime': srcMap.attributes.statistics.totalSearchingTime / 3600]
-                flist << ['cuttingBladeUsageTime': srcMap.attributes.statistics.cuttingBladeUsageTime / 3600]
-            } catch(ignored){}
+            // Statistics: not every mower reports every field, so null-guard each one
+            // individually rather than wrapping the whole block in a swallow-everything catch
+            // (which previously hid which specific statistic was missing).
+            Map stats=(Map)srcMap.attributes.statistics ?: [:]
+            if(stats.numberOfChargingCycles != null) flist << ['numberOfChargingCycles': stats.numberOfChargingCycles]
+            flist << ['numberOfCollisions': collisions]
+            if(stats.totalChargingTime != null)    flist << ['totalChargingTime':    stats.totalChargingTime / 3600]
+            if(stats.totalCuttingTime != null)     flist << ['totalCuttingTime':     stats.totalCuttingTime / 3600]
+            if(stats.totalRunningTime != null)     flist << ['totalRunningTime':     stats.totalRunningTime / 3600]
+            if(stats.totalSearchingTime != null)   flist << ['totalSearchingTime':   stats.totalSearchingTime / 3600]
+            if(stats.cuttingBladeUsageTime != null) flist << ['cuttingBladeUsageTime': stats.cuttingBladeUsageTime / 3600]
 
             flist << [apiConnected: apiConnection]
             flist << [lastPoll: slastPoll]
